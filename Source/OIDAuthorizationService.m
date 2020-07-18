@@ -117,7 +117,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (BOOL)shouldHandleURL:(NSURL *)URL {
-  return [URL.absoluteString hasPrefix:@"com.ergon.recuit://oauth"];
+  return [[self class] URL:URL matchesRedirectionURL:_request.redirectURL];
 }
 
 - (BOOL)resumeExternalUserAgentFlowWithURL:(NSURL *)URL {
