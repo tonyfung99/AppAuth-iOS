@@ -116,8 +116,27 @@ NS_ASSUME_NONNULL_BEGIN
       && OIDIsEqualIncludingNil(standardizedURL.path, standardizedRedirectURL.path);
 }
 
+
 - (BOOL)shouldHandleURL:(NSURL *)URL {
-  return [[self class] URL:URL matchesRedirectionURL:_request.redirectURL];
+    return [[self class] URL:URL matchesRedirectionURL:_request.redirectURL] || [self doesMatchURLScheme:URL.scheme];
+}
+
+- (BOOL)doesMatchURLScheme:(NSString *)scheme {
+  if([[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleURLTypes"]) {
+    NSArray *urlTypes = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleURLTypes"];
+    for(NSDictionary *urlType in urlTypes)
+    {
+      if(urlType[@"CFBundleURLSchemes"])
+      {
+        NSArray *urlSchemes = urlType[@"CFBundleURLSchemes"];
+        for(NSString *urlScheme in urlSchemes)
+          if([urlScheme caseInsensitiveCompare:scheme] == NSOrderedSame)
+            return YES;
+      }
+
+    }
+  }
+  return NO;
 }
 
 - (BOOL)resumeExternalUserAgentFlowWithURL:(NSURL *)URL {

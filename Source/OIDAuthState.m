@@ -138,7 +138,10 @@ static const NSUInteger kExpiryTimeTolerance = 60;
                            // inspects response and processes further if needed (e.g. authorization
                            // code exchange)
                            if (authorizationResponse) {
-                             if ([authorizationRequest.responseType
+
+                             BOOL skipFlow = [[authorizationRequest.additionalParameters objectForKey:@"authCodeFlowOnly"] boolValue];
+                             
+                             if (!skipFlow && [authorizationRequest.responseType
                                      isEqualToString:OIDResponseTypeCode]) {
                                // if the request is for the code flow (NB. not hybrid), assumes the
                                // code is intended for this client, and performs the authorization
